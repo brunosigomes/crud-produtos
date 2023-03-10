@@ -68,6 +68,10 @@ th {
   padding: 10px 30px;
 }
 
+td {
+  color: white;
+}
+
 h3 {
   font-size: 1.2rem;
   font-weight: 500;
@@ -80,6 +84,7 @@ h3 {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .edit {
@@ -89,6 +94,7 @@ h3 {
   cursor: pointer;
   margin-left: 5px;
   padding: 2px 10px;
+  border-radius: 5px;
 }
 
 @media (max-width: 1024px) {
