@@ -1,17 +1,17 @@
-<script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true
+<script>
+export default {
+  props: {
+    msg: String
   }
-})
+}
 </script>
 
 <template>
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h3>
-      Este pequeno sistema cria, lista, edita, deleta produtos salvando no local storage do navegador.
+      Este pequeno sistema cria, lista, edita, deleta produtos salvando no local storage do
+      navegador.
     </h3>
   </div>
 </template>

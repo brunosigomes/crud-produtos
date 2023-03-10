@@ -1,39 +1,34 @@
-<script setup>
-defineProps({
-  data: {
-    type: Array
-  }
-})
-</script>
-
 <script>
 export default {
   methods: {
     deletar(id) {
-      let produtosAtualizado = this.data.filter((item) => {
-        return item.id != id;
+      let produtosAtualizado = this.produtos.filter((item) => {
+        return item.id != id
       })
 
-      localStorage.setItem('produtos', JSON.stringify(produtosAtualizado));
+      localStorage.setItem('produtos', JSON.stringify(produtosAtualizado))
 
-      this.$emit('deletar', produtosAtualizado);
+      this.$emit('deletar', produtosAtualizado)
     },
     editar(id) {
-      let produto_editado = this.data.filter((item) => {
-        return item.id == id;
-      });
+      let produto_editado = this.produtos.filter((item) => {
+        return item.id == id
+      })
 
-      let produto_editado_string = JSON.stringify(produto_editado);
-      let produto_editado_array = JSON.parse(produto_editado_string);
+      let produto_editado_string = JSON.stringify(produto_editado)
+      let produto_editado_array = JSON.parse(produto_editado_string)
 
-      this.$emit('editar', produto_editado_array);
+      this.$emit('editar', produto_editado_array)
     }
+  },
+  props: {
+    produtos: Array
   }
 }
 </script>
 
 <template>
-  <table class="table">
+  <table class="table" v-if="produtos.length > 0">
     <thead>
       <th align="center">id</th>
       <th align="center">nome</th>
@@ -43,15 +38,15 @@ export default {
       <th align="center" colspan="2">Ações</th>
     </thead>
     <tbody>
-      <tr v-for="d in data" :key="d">
-        <td align="center">{{ d.id }}</td>
-        <td align="center">{{ d.nome }}</td>
-        <td align="center">{{ d.descricao }}</td>
-        <td align="center">{{ d.qtd }}</td>
-        <td align="center">{{ d.valor }}</td>
+      <tr v-for="produto in produtos" :key="produto.id">
+        <td align="center">{{ produto.id }}</td>
+        <td align="center">{{ produto.nome }}</td>
+        <td align="center">{{ produto.descricao }}</td>
+        <td align="center">{{ produto.qtd }}</td>
+        <td align="center">{{ produto.valor }}</td>
         <td align="center">
-          <button @click="deletar(d.id)" class="delete">deletar</button>
-          <button @click="editar(d.id)" class="edit">editar</button>
+          <button @click="deletar(produto.id)" class="delete">deletar</button>
+          <button @click="editar(produto.id)" class="edit">editar</button>
         </td>
       </tr>
     </tbody>

@@ -1,25 +1,25 @@
 <script setup>
 import Titulo from './components/Titulo.vue'
 import Produtos from './components/Produtos.vue'
+import Button from './components/Button.vue'
 </script>
 
 <script>
 export default {
   data() {
     return {
-      produtos:
-        localStorage.getItem('produtos') != null
-          ? JSON.parse(localStorage.getItem('produtos'))
-          : [],
-      id: localStorage.getItem('last_id') != null ? Number(localStorage.getItem('last_id')) + 1 : 1,
+      produtos: this.getProdutos(),
+      id: this.getLastId(),
       nome: '',
       descricao: '',
-      qtd: '',
-      valor: '',
-      idx: ''
+      qtd: null,
+      valor: null,
+      idx: '',
+      showEdit: false
     }
   },
   methods: {
+    // Cria novo produto
     criar() {
       if (
         this.isEmpty(this.nome) ||
@@ -28,6 +28,8 @@ export default {
         this.isEmpty(this.valor)
       ) {
         alert('Preencha todos os campos!')
+      } else if (isNaN(this.qtd) || isNaN(this.valor)) {
+        alert('Valor quantidade e valor tem que ser numérico!')
       } else {
         this.produtos.push({
           id: this.id,
@@ -43,11 +45,14 @@ export default {
         this.qtd = ''
         this.valor = ''
         this.id += 1
+        this.showEdit
       }
     },
+    // Deleta produto
     deletar(novoValor) {
       this.produtos = novoValor
     },
+    // Edita o produto
     editar(novoValor) {
       novoValor.forEach((element) => {
         this.id = element.id
@@ -57,36 +62,56 @@ export default {
         this.valor = element.valor
       })
 
-      document.querySelector('.table').style.display = 'none'
-      document.querySelector('#create').style.display = 'none'
-      document.querySelector('#edit').style.display = 'block'
+      this.showEdit = true
     },
+    // Salva o produto editado
     salvar() {
-      this.produtos.forEach((item, index) => {
-        if (item.id == this.id) {
-          this.idx = index
+      if (
+        this.isEmpty(this.nome) ||
+        this.isEmpty(this.descricao) ||
+        this.isEmpty(this.qtd) ||
+        this.isEmpty(this.valor)
+      ) {
+        alert('Preencha todos os campos!')
+      } else if (isNaN(this.qtd) || isNaN(this.valor)) {
+        alert('Valor quantidade e valor tem que ser numérico!')
+      } else {
+        this.produtos.forEach((item, index) => {
+          if (item.id == this.id) {
+            this.idx = index
+          }
+        })
+
+        this.produtos[this.idx] = {
+          id: this.id,
+          nome: this.nome,
+          descricao: this.descricao,
+          qtd: this.qtd,
+          valor: this.valor
         }
-      })
 
-      this.produtos[this.idx] = {
-        id: this.id,
-        nome: this.nome,
-        descricao: this.descricao,
-        qtd: this.qtd,
-        valor: this.valor
+        localStorage.setItem('produtos', JSON.stringify(this.produtos))
+
+        this.nome = ''
+        this.descricao = ''
+        this.qtd = ''
+        this.valor = ''
+        this.id += 1
+
+        this.showEdit = false
       }
-
-      localStorage.setItem('produtos', JSON.stringify(this.produtos))
-
-      this.nome = ''
-      this.descricao = ''
-      this.qtd = ''
-      this.valor = ''
-      this.id += 1
-
-      document.querySelector('.table').style.display = 'inline-table'
-      document.querySelector('#create').style.display = 'block'
-      document.querySelector('#edit').style.display = 'none'
+    },
+    // Recupera os produtos do localStorage
+    getProdutos() {
+      return localStorage.getItem('produtos') != null
+        ? JSON.parse(localStorage.getItem('produtos'))
+        : []
+    },
+    // Recupera o ultimo id salvo do localStorage
+    getLastId() {
+      return localStorage.getItem('last_id') != null
+        ? Number(localStorage.getItem('last_id')) + 1
+        : 1
     },
     isEmpty(value) {
       return (
@@ -114,12 +139,13 @@ export default {
         <input type="text" placeholder="Quantidade" v-model="qtd" />
         <input type="text" placeholder="Valor" v-model="valor" />
       </div>
-      <button @click="criar" id="create">Criar</button>
-      <button @click="salvar" id="edit">Salvar</button>
+
+      <Button texto="Criar" :style="{ background: '#00bd7e' }" @click="criar" v-if="!showEdit" />
+      <Button texto="Salvar" :style="{ background: 'blue' }" @click="salvar" v-if="showEdit" />
     </div>
 
     <main>
-      <Produtos :data="produtos" @deletar="deletar" @editar="editar" />
+      <Produtos :produtos="produtos" @deletar="deletar" @editar="editar" v-if="!showEdit" />
     </main>
   </div>
 </template>
@@ -143,30 +169,16 @@ input[type='text'] {
   outline: 0;
 }
 
-button {
-  display: block;
-  margin: 20px auto;
-  height: 50px;
-  width: 100%;
-  max-width: 300px;
-  border: none;
-  border-radius: 10px;
-  background: #00bd7e;
-  color: white;
-  cursor: pointer;
+.show {
+  display: block !important;
 }
 
-button#edit {
-  display: none;
-  margin: 20px auto;
-  height: 50px;
-  width: 100%;
-  max-width: 300px;
-  border: none;
-  border-radius: 10px;
-  background: blue;
-  color: white;
-  cursor: pointer;
+.hide {
+  display: none !important;
+}
+
+.show-table {
+  display: inline-table !important;
 }
 
 @media (max-width: 1024px) {
