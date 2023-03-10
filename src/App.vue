@@ -1,7 +1,7 @@
 <script setup>
-import Titulo from './components/Titulo.vue'
-import Produtos from './components/Produtos.vue'
-import Button from './components/Button.vue'
+import Titulo from './components/CustomTitle.vue'
+import Produtos from './components/CustomProdutos.vue'
+import Button from './components/CustomButton.vue'
 </script>
 
 <script>
